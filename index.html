@@ -66,15 +66,6 @@
                 class="mx-auto hover:shadow-cyan-400 lg:w-[80vw] rounded-lg mb-6 mt-8 bg-white bg-opacity-80 shadow-lg shadow-cyan-50 p-4">
                 <h1 class="text-gray-800 text-xl font-bold ml-8">About Me</h1>
                 <div class="h-0.25 bg-black mx-8"></div>
-                <!-- <p class="text-gray-800 text-md font-normal px-12 py-2">
-                    I’m a Computer Science graduate with a strong background in competitive programming and full-stack
-                    development.
-                    I enjoy building systems from low-level architecture to user-facing applications, including
-                    compilers, simulators,
-                    and web platforms. I’ve solved 400+ problems on Codeforces and LeetCode, sharpening my
-                    problem-solving skills.
-                    Curious by nature, I love learning new technologies and turning ideas into working software.
-                </p> -->
                 <p id="text" class="text-gray-800 text-md font-normal px-12 py-2">
                     <span id="dots">
                         I’m a Computer Science graduate with a strong background in competitive programming and
@@ -110,7 +101,8 @@
                         Whether it’s writing low-level code, automating workflows, or building complete applications, I
                         enjoy tackling complex challenges and continuously improving my craft as an engineer.
                     </span>
-                    <button onclick="toggleReadMore()" id="btn" class="text-cyan-600 cursor-pointer">&nbsp; ...Read Details</button>
+                    <button onclick="toggleReadMore()" id="btn" class="text-cyan-600 cursor-pointer">&nbsp; ...Read
+                        Details</button>
                 </p>
             </div>
 
@@ -565,7 +557,25 @@
             &copy; 2024 Md Moshiur Rahman Naeem. All rights reserved.
         </div> -->
     </div>
-    <script src="fade.js"></script>
+    <script>
+        function toggleReadMore() {
+            const dots = document.getElementById("dots");
+            const more = document.getElementById("more");
+            const button = document.getElementById("btn");
+
+            if (dots.style.display === "none") {
+                // Collapse
+                dots.style.display = "inline";
+                more.style.display = "none";
+                button.innerHTML = "&nbsp; ...Read Details";
+            } else {
+                // Expand
+                dots.style.display = "none";
+                more.style.display = "inline";
+                button.innerHTML = "&nbsp; ...Read Brief";
+            }
+        }
+    </script>
 </body>
 
 </html>
