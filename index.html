@@ -66,11 +66,51 @@
                 class="mx-auto hover:shadow-cyan-400 lg:w-[80vw] rounded-lg mb-6 mt-8 bg-white bg-opacity-80 shadow-lg shadow-cyan-50 p-4">
                 <h1 class="text-gray-800 text-xl font-bold ml-8">About Me</h1>
                 <div class="h-0.25 bg-black mx-8"></div>
-                <p class="text-gray-800 text-md font-normal px-12 py-2">
-                    I’m a Computer Science graduate with a strong background in competitive programming and full-stack development. 
-                    I enjoy building systems from low-level architecture to user-facing applications, including compilers, simulators, 
-                    and web platforms. I’ve solved 400+ problems on Codeforces and LeetCode, sharpening my problem-solving skills. 
+                <!-- <p class="text-gray-800 text-md font-normal px-12 py-2">
+                    I’m a Computer Science graduate with a strong background in competitive programming and full-stack
+                    development.
+                    I enjoy building systems from low-level architecture to user-facing applications, including
+                    compilers, simulators,
+                    and web platforms. I’ve solved 400+ problems on Codeforces and LeetCode, sharpening my
+                    problem-solving skills.
                     Curious by nature, I love learning new technologies and turning ideas into working software.
+                </p> -->
+                <p id="text" class="text-gray-800 text-md font-normal px-12 py-2">
+                    <span id="dots">
+                        I’m a Computer Science graduate with a strong background in competitive programming and
+                        full-stack development. I enjoy building systems from low-level architecture to user-facing
+                        applications, including compilers, simulators, and web platforms. I’ve solved 400+ problems on
+                        Codeforces and LeetCode, sharpening my problem-solving skills. Curious by nature, I love
+                        learning new technologies and turning ideas into working software.
+                    </span>
+                    <span id="more" style="display:none;">
+                        I’m a Computer Science graduate with a strong foundation in competitive programming,
+                        system-level engineering, and full-stack development. I enjoy understanding how software works
+                        at every layer — from logic gates and CPU architecture to compilers, operating systems concepts,
+                        and user-facing web applications.<br><br>
+
+                        Over the years, I’ve worked on a wide range of projects, including compiler design using Lex and
+                        Yacc, circuit-level computer architecture design, a Verilog-based 5-bit computer emulator, an
+                        assembly-to-machine-code converter and program simulator, full-stack web applications, and
+                        terminal-based game development. These projects have helped me develop a deep, practical
+                        understanding of how software and hardware interact, and how design decisions at lower levels
+                        impact higher-level systems.<br><br>
+
+                        I actively practice competitive programming on platforms like Codeforces and LeetCode, where
+                        I’ve solved 400+ problems. This has strengthened my problem-solving skills, algorithmic
+                        thinking, and ability to reason about edge cases and performance — skills I carry into every
+                        project I build.<br><br>
+
+                        I’m naturally curious and enjoy learning new technologies by implementing what I learn rather
+                        than stopping at theory. With experience across multiple domains and technology stacks, I adapt
+                        quickly and feel comfortable exploring unfamiliar tools, frameworks, or problem spaces. I value
+                        clean design, correctness, and reliability, and I’m always interested in building systems that
+                        are both technically sound and practically useful.<br><br>
+
+                        Whether it’s writing low-level code, automating workflows, or building complete applications, I
+                        enjoy tackling complex challenges and continuously improving my craft as an engineer.
+                    </span>
+                    <button onclick="toggleReadMore()" id="btn" class="text-cyan-600 cursor-pointer">&nbsp; ...Read Details</button>
                 </p>
             </div>
 
@@ -293,15 +333,15 @@
                 <div class="h-0.25 bg-black mx-8"></div>
                 <div class="text-gray-800 text-md font-normal px-12 py-2">
                     Programming Languages:<br>
-                    <a href="https://coursera.org/verify/specialization/9TJN7CVQ27QA"><img src="./C.png"
-                            title="C" class="w-9 h-9 inline-block mr-1"></a>
-                    <a href="https://coursera.org/verify/GUATC3698QXF"><img src="./CPP.png"
-                            title="C++" class="w-8 h-8 inline-block mr-1"></a>
-                    <a href="https://coursera.org/verify/S0JCN1N35RI2"><img src="./python.png"
-                            title="Python" class="w-8 h-8 inline-block mr-1"></a>
+                    <a href="https://coursera.org/verify/specialization/9TJN7CVQ27QA"><img src="./C.png" title="C"
+                            class="w-9 h-9 inline-block mr-1"></a>
+                    <a href="https://coursera.org/verify/GUATC3698QXF"><img src="./CPP.png" title="C++"
+                            class="w-8 h-8 inline-block mr-1"></a>
+                    <a href="https://coursera.org/verify/S0JCN1N35RI2"><img src="./python.png" title="Python"
+                            class="w-8 h-8 inline-block mr-1"></a>
                     <img src="./js.png" title="JavaScript" class="w-8 h-8 inline-block mr-1">
-                    <a href="https://coursera.org/verify/Z8SZHPYYMQFG"><img src="./Bash.png"
-                            title="Bash" class="w-8 h-8 inline-block mr-1"></a>
+                    <a href="https://coursera.org/verify/Z8SZHPYYMQFG"><img src="./Bash.png" title="Bash"
+                            class="w-8 h-8 inline-block mr-1"></a>
                     <img src="./x86.png" title="x86" class="w-9 h-9 inline-block">
                     <br><br>
                     Web Development:<br>

@@ -22,3 +22,20 @@ const observer = new IntersectionObserver(
 
 sections.forEach(section => observer.observe(section));
 
+function toggleReadMore() {
+  const dots   = document.getElementById("dots");
+  const more   = document.getElementById("more");
+  const button = document.getElementById("btn");
+
+  if (dots.style.display === "none") {
+    // Collapse
+    dots.style.display   = "inline";
+    more.style.display   = "none";
+    button.innerHTML     = "&nbsp; ...Read Details";
+  } else {
+    // Expand
+    dots.style.display   = "none";
+    more.style.display   = "inline";
+    button.innerHTML     = "&nbsp; ...Read Brief";
+  }
+}
