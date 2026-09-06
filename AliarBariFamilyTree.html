@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Jomidar Family Tree - Fullscreen</title>
+    <title>Aliya Family Tree - Fullscreen</title>
     <script src="https://d3js.org/d3.v7.min.js">
     </script>
     <style>
@@ -351,7 +351,7 @@
         // ============================================================
         const familyData = {
             "name": "Jomidar Nannu Raja",
-            "spouse": "Aleya",
+            "spouse": "Aliya",
             "clan": "Shunda",
             "origin": "Maitbhangga",
             "children": [{
@@ -369,14 +369,38 @@
                         }, {
                             "name": "Ilias",
                             "children": [
-                                { "name": "Mintu" },
-                                { "name": "Kibria" }
+                                { "name": "Mintu",
+                                    "note": "Was beaten to death",
+                                    "spouse": "Shirin",
+                                    "children": [
+                                        { "name": "Tahsin" },
+                                        { "name": "Tasnuba" }
+                                    ]
+                                 },
+                                { "name": "Kibria",
+                                    "spouse": "Shirin" 
+                                }
                             ]
                         }, {
                             "name": "Tofsir Alam",
                             "children": [
-                                { "name": "Shamsul Alam" },
-                                { "name": "Selim" }
+                                { "name": "Shamsul Alam",
+                                    "children": [
+                                        { "name": "Tipu",
+                                            "children": [
+                                                { "name": "Sajid" },
+                                                { "name": "Sabiha" },
+                                                { "name": "Muntaha" }
+                                            ]
+                                         },
+                                        { "name": "Titu" }
+                                    ]
+                                 },
+                                { "name": "Selim",
+                                    "children": [
+                                        { "name": "Shakil" }
+                                    ]
+                                 }
                             ]
                         }, {
                             "name": "Muajjam Husain",
@@ -386,6 +410,7 @@
                             ]
                         }, {
                             "name": "Jamshed Alam",
+                            "spouse": "Kulsum",
                             "children": [
                                 { 
                                     "name": "Rasel",
@@ -398,7 +423,7 @@
                                 { 
                                     "name": "Rocky",
                                     "children": [
-                                        { "name": "Unknown Son" }
+                                        { "name": "Rony" }
                                     ]
                                  }
                             ]
@@ -418,13 +443,23 @@
                                         { "name": "Shoikot", "note": "Marine Engineer" }
                                     ]
                                  },
-                                { "name": "Mukaddes" },
+                                { "name": "Mukaddes", 
+                                    "children": [
+                                        {"name": "Kamrul"},
+                                        {"name": "Akram"}, 
+                                        {"name": "Amjad"}
+                                    ] 
+                                },
                                 { "name": "Hanif",
                                     "children": [
-                                        { "name": "Rakib", "note": "Pharmacy owner" },
-                                        { "name": "Hridoy" }
+                                        { "name": "Rakib", "note": "Pharmacy owner", "children": [{"name": "xyz"}] },
+                                        { "name": "Hridoy", "children": [{"name": "Ontor"}] }
                                     ] },
-                                { "name": "Rohim"
+                                { "name": "Rohim",
+                                    "note": "Contractor in UAE",
+                                    "children": [
+                                        { "name": "Rajib", "children": [{"name": "Ajib"}] }
+                                    ]
                                 }
                             ]
                         }, {
@@ -508,7 +543,7 @@
                         "children": [{
                             "name": "Jahangir",
                             "children": [
-                                { "name": "Mehdi",
+                                { "name": "Mehedi",
                                     "children": [
                                         { "name": "Orhan" }
                                     ]
@@ -520,7 +555,7 @@
                             "spouse": "Shahnaz",
                             "note": "Worked at Education Board, Sandwip branch",
                             "children": [
-                                { "name": "Newaz Nishad",
+                                { "name": "Newaz Shorif Nishad",
                                     "spouse": "Doctor",
                                     "children": [
                                         { "name": "PutraNishad" }
@@ -559,7 +594,7 @@
                                 { "name": "Jahid Doja", "note": "B.Com" },
                                 { "name": "Doja Lion", "note": "Engineer" }
                             ],
-                            "note": "Had seven sons and five daughters"
+                            "note": "Prominent left wing politician. Had seven sons and five daughters"
                         }, {
                             "name": "Manik"
                         }]
@@ -620,7 +655,12 @@
                         }, {
                             "name": "Abdul Wahab",
                             "children": [
-                                { "name": "Firoz" },
+                                { "name": "Firoz",
+                                    "children": [
+                                        { "name": "Porag" },
+                                        { "name": "Formi" }
+                                    ]
+                                 },
                                 { "name": "Parvez" },
                                 { "name": "Babor" }
                             ]
@@ -628,14 +668,14 @@
                             "name": "Nur Safa",
                             "note": "Lives in USA, has two sons and a daughter",
                             "children": [
-                                { "name": "Unknown Son 1", "note": "Name unknown" },
-                                { "name": "Unknown Son 2", "note": "Name unknown" },
-                                { "name": "Unknown Daughter", "note": "Name unknown" }
+                                { "name": "Son1", "note": "Name unknown" },
+                                { "name": "Son2", "note": "Name unknown" }
                             ]
                         }],
                         "note": "Had four sons"
                     }, {
                         "name": "Bozlur Rahman",
+                        "note": "Helmsman of Ships",
                         "spouse": "Monowara",
                         "children": [{
                             "name": "Enamul Haq",
@@ -659,20 +699,21 @@
                                         { "name": "Tamanna", "note": "Married" },
                                         { "name": "Masum", "note": "Lives in UAE" }
                                     ],
-                                    "note": "Had a son and a daughter"
+                                    "note": "Carpenter in Shiber Hat."
                                 }
                             ],
                             "children_count": 7
                         }, {
-                            "name": "Mahibullah",
+                            "name": "Mohib Ullah",
+                            "note": "Stuard of Ships",
                             "spouse": "Fazila Begum",
                             "children": [{
                                 "name": "Humayun Kabir",
                                 "spouse": "Nilufar Akter",
                                 "children": [{
                                     "name": "Robiul Hasan Nipun",
-                                    "note": "BSc in Mechanical Engineering, Deputy Manager at NPCBL.",
-                                    "spouse": "Nowshin Ibnat Ira",
+                                    "note": "BSc in ME, Deputy Manager at NPCBL.",
+                                    "spouse": "Ira",
                                     "children": [
                                         { "name": "Saira Hasan" },
                                         { "name": "Safwan Hasan"}
@@ -683,26 +724,28 @@
                                 }],
                             }, {
                                 "name": "Ahsanul Kabir",
+                                "spouse": "Mymuna Begum",
                                 "children": [
-                                    { "name": "Shobnom Sultana Ria", "note": "Lives in Narayanganj", "spouse": "Unknown" },
-                                    { "name": "Abdur Rahman Riaz", "note": "MSc in Computer Vision, BSc in CSE. Lives in S.Korea" },
-                                    { "name": "Minhajur Rahman Minhaj", "note": "BSc in Nutrition & Food Engineering" }
+                                    { "name": "Shobnom Sultana Ria", "spouse": "Masud" },
+                                    { "name": "Abdur Rahman Riaz", "note": "MSc in Computer Vision, BSc in CSE. Lives in S.Korea", "spouse": "Mitu" },
+                                    { "name": "Minhajur Rahman Minhaz", "note": "BSc in NFE" }
                                 ],
-                                "note": "Businessman"
+                                "note": "Shop Owner"
                             }, {
                                 "name": "Monjur Hossain",
+                                "spouse": "Jobaida Siddiqa",
                                 "children": [
                                     { "name": "Hamidur Rahman Turaz", "note": "BSc in CSE" },
-                                    { "name": "Sadia Sultana Othoi", "note": "BSc in Geography & Environmental Science" }
+                                    { "name": "Sadia Sultana Othoi", "note": "BSc in GES" }
                                 ],
                             }]
                         }, {
                             "name": "Rafique Master",
                             "note": "Had two wives. Was wounded in swordfight.",
                             "children": [
-                                { "name": "Unknown Son", "note": "Name unknown" },
-                                { "name": "Unknown Daughter 1", "note": "Name unknown" },
-                                { "name": "Unknown Daughter 2", "note": "Name unknown" }
+                                { "name": "Son", "note": "Name unknown" },
+                                { "name": "Daughter1", "note": "Name unknown" },
+                                { "name": "Daughter2", "note": "Name unknown" }
                             ]
                         }]
                     }]
