@@ -24,7 +24,7 @@
         .header {
             background: linear-gradient(135deg, #1a237e, #0d47a1);
             color: white;
-            padding: 10px 20px;
+            padding: 8px 16px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             display: flex;
             justify-content: space-between;
@@ -36,7 +36,7 @@
             left: 0;
             right: 0;
             z-index: 100;
-            height: 56px;
+            height: 40px;
         }
 
         .header h1 {
@@ -49,16 +49,16 @@
             font-size: 12px;
             opacity: 0.9;
             background: rgba(255, 255, 255, 0.12);
-            padding: 4px 12px;
+            padding: 4px 8px;
             border-radius: 6px;
         }
 
         #tree-container {
             position: fixed;
-            top: 56px;
+            top: 28px;
             left: 0;
             right: 0;
-            bottom: 100px;
+            bottom: 12px;
             background: #fafafa;
             overflow: hidden;
             cursor: grab;
@@ -261,9 +261,9 @@
             position: fixed;
             background: rgba(0, 0, 0, 0.88);
             color: white;
-            padding: 10px 14px;
+            padding: 10px 10px;
             border-radius: 8px;
-            font-size: 13px;
+            font-size: 10px;
             max-width: 300px;
             pointer-events: none;
             z-index: 1000;
@@ -318,7 +318,7 @@
     <div class="header">
         <h1>🌳 Aliar Bari Family Tree</h1>
         <div class="clan-info">
-            🏛️ Shunda Clan · Hudra Kali → Bhawa, Katgor → Maitbhangga
+            🏛️ Shunda Clan · Hudrakhali → Bhawa, Katgor → Maitbhangga
         </div>
     </div>
 
@@ -727,7 +727,7 @@
                                 "spouse": "Mymuna Begum",
                                 "children": [
                                     { "name": "Shobnom Sultana Ria", "spouse": "Masud" },
-                                    { "name": "Abdur Rahman Riaz", "note": "MSc in Computer Vision, BSc in CSE. Lives in S.Korea", "spouse": "Mitu" },
+                                    { "name": "Abdur Rahman Riaz", "note": "MSc Computer Vision, BSc in CSE. Lives in S.Korea", "spouse": "Mitu" },
                                     { "name": "Minhajur Rahman Minhaz", "note": "BSc in NFE" }
                                 ],
                                 "note": "Shop Owner"
@@ -762,7 +762,7 @@
 
         // Extreme tree size for maximum spacing
         const treeWidth = Math.max(5000, window.innerWidth * 3.0);
-        const treeHeight = Math.max(3500, window.innerHeight * 2.8);
+        const treeHeight = Math.max(3800, window.innerHeight * 2.8);
 
         // Create SVG that fills the container
         const svg = d3.select("#family-tree")
@@ -813,7 +813,7 @@
         // ============================================================
 
         function isFemale(name) {
-            const knownFemale = ['Saira', 'Shobnom', 'Tamanna', 'Sadia', 'Aleya', 'Sultana', 'Ria', 'Othoi', 'Monowara', 'Liza', 'Lima', 'Lia', 'Shahnaz', 'Nilufar', 'Nowshin', 'Ira'];
+            const knownFemale = ['Saira', 'Shobnom', 'Tamanna', 'Sadia', 'Aliya', 'Sultana', 'Ria', 'Othoi', 'Monowara', 'Liza', 'Lima', 'Lia', 'Shahnaz', 'Nilufar', 'Nowshin', 'Ira'];
             if (knownFemale.some(f => name.includes(f))) return true;
             const lastChar = name.slice(-1).toLowerCase();
             return lastChar === 'a' && name.length > 3;
