@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Jomidar Family Tree - Fullscreen</title>
+    <script src="https://d3js.org/d3.v7.min.js">
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #e8ecf1;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a237e, #0d47a1);
+            color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            height: 56px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .header .clan-info {
+            font-size: 12px;
+            opacity: 0.9;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 4px 12px;
+            border-radius: 6px;
+        }
+
+        #tree-container {
+            position: fixed;
+            top: 56px;
+            left: 0;
+            right: 0;
+            bottom: 100px;
+            background: #fafafa;
+            overflow: hidden;
+            cursor: grab;
+        }
+
+        #tree-container:active {
+            cursor: grabbing;
+        }
+
+        #family-tree {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #family-tree svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: #fafafa;
+        }
+
+        /* Node styling */
+        .node-group {
+            cursor: grab;
+        }
+
+        .node-group:active {
+            cursor: grabbing;
+        }
+
+        .node-circle {
+            fill: #fff;
+            stroke: #1a237e;
+            stroke-width: 2.5px;
+            transition: all 0.2s;
+        }
+
+        .node-circle:hover {
+            stroke: #ff6f00;
+            stroke-width: 3.5px;
+        }
+
+        .node-circle.female {
+            fill: #fce4ec;
+            stroke: #e91e63;
+        }
+
+        .node-circle.male {
+            fill: #e3f2fd;
+            stroke: #1a237e;
+        }
+
+        .node-circle.has-note {
+            stroke: #ff6f00;
+            stroke-width: 3px;
+        }
+
+        .node-name {
+            font: 14px 'Segoe UI', sans-serif;
+            font-weight: 600;
+            fill: #1a237e;
+            pointer-events: none;
+            dominant-baseline: middle;
+        }
+
+        .node-note {
+            font: 11px 'Segoe UI', sans-serif;
+            fill: #888;
+            font-style: italic;
+            pointer-events: none;
+            dominant-baseline: middle;
+        }
+
+        .node-spouse {
+            font: 11px 'Segoe UI', sans-serif;
+            fill: #c62828;
+            font-weight: 500;
+            pointer-events: none;
+            dominant-baseline: middle;
+        }
+
+        .link {
+            fill: none;
+            stroke: #b0bec5;
+            stroke-width: 2.5px;
+            transition: stroke 0.3s;
+        }
+
+        .link:hover {
+            stroke: #1a237e;
+            stroke-width: 3.5px;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #e0e0e0;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            height: 56px;
+        }
+
+        .controls button {
+            padding: 5px 14px;
+            border: none;
+            border-radius: 5px;
+            background: #1a237e;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        .controls button:hover {
+            background: #0d47a1;
+            transform: scale(1.02);
+        }
+
+        .controls button:active {
+            transform: scale(0.97);
+        }
+
+        .controls button.secondary {
+            background: #78909c;
+        }
+
+        .controls button.secondary:hover {
+            background: #546e7a;
+        }
+
+        .controls .hint {
+            font-size: 12px;
+            color: #888;
+            margin-left: auto;
+        }
+
+        .controls .zoom-info {
+            font-size: 12px;
+            color: #555;
+            padding: 3px 10px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 5px 12px;
+            background: rgba(245, 247, 250, 0.9);
+            border-radius: 6px;
+            align-items: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: #555;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid #1a237e;
+        }
+
+        .legend-dot.male {
+            background: #e3f2fd;
+            border-color: #1a237e;
+        }
+
+        .legend-dot.female {
+            background: #fce4ec;
+            border-color: #e91e63;
+        }
+
+        .legend-dot.note {
+            border-color: #ff6f00;
+            background: #fff8e1;
+        }
+
+        .tooltip {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.88);
+            color: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            max-width: 300px;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.25s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        .tooltip .tt-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #ffd54f;
+        }
+
+        .tooltip .tt-detail {
+            font-size: 12px;
+            opacity: 0.85;
+            margin-top: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 14px;
+            }
+            .header .clan-info {
+                font-size: 10px;
+                padding: 2px 8px;
+            }
+            .controls .hint {
+                display: none;
+            }
+            .controls button {
+                font-size: 10px;
+                padding: 4px 10px;
+            }
+            .legend {
+                gap: 6px;
+                padding: 3px 8px;
+            }
+            .legend-item {
+                font-size: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🌳 Aliar Bari Family Tree</h1>
+        <div class="clan-info">
+            🏛️ Shunda Clan · Hudra Kali → Bhawa, Katgor → Maitbhangga
+        </div>
+    </div>
+
+    <div id="tree-container">
+        <div id="family-tree"></div>
+    </div>
+
+    <div class="controls">
+        <button onclick="zoomIn()">🔍 Zoom In</button>
+        <button onclick="zoomOut()">🔍 Zoom Out</button>
+        <button onclick="resetZoom()">⟲ Reset</button>
+        <button onclick="fitToView()">⊡ Fit</button>
+        <button class="secondary" onclick="expandAll()">📂 Expand All</button>
+        <button class="secondary" onclick="collapseAll()">📁 Collapse All</button>
+        <button class="secondary" onclick="autoLayout()">🔄 Auto Layout</button>
+        <span class="zoom-info" id="zoomDisplay">100%</span>
+        <div class="legend">
+            <span class="legend-item"><span class="legend-dot male"></span> Male</span>
+            <span class="legend-item"><span class="legend-dot female"></span> Female</span>
+            <span class="legend-item"><span class="legend-dot note"></span> Note</span>
+        </div>
+        <span class="hint">🖱️ Drag nodes to reposition · Drag canvas to pan</span>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // ============================================================
+        // FAMILY DATA (Complete tree)
+        // ============================================================
+        const familyData = {
+            "name": "Jomidar Nannu Raja",
+            "spouse": "Aleya",
+            "clan": "Shunda",
+            "origin": "Maitbhangga",
+            "children": [{
+                "name": "Akbar Ali",
+                "children": [{
+                    "name": "Ekpon Ali",
+                    "children": [{
+                        "name": "Jalal Ahmed",
+                        "children": [{
+                            "name": "Shah Alam",
+                            "children": [
+                                { "name": "Azim" },
+                                { "name": "Nazim" }
+                            ]
+                        }, {
+                            "name": "Ilias",
+                            "children": [
+                                { "name": "Mintu" },
+                                { "name": "Kibria" }
+                            ]
+                        }, {
+                            "name": "Tofsir Alam",
+                            "children": [
+                                { "name": "Shamsul Alam" },
+                                { "name": "Selim" }
+                            ]
+                        }, {
+                            "name": "Muajjam Husain",
+                            "children": [
+                                { "name": "Tofa" },
+                                { "name": "Tauhid" }
+                            ]
+                        }, {
+                            "name": "Jamshed Alam",
+                            "children": [
+                                { 
+                                    "name": "Rasel",
+                                    "children": [
+                                        { "name": "Raifa"},
+                                        { "name": "Ramisha"}
+                                    ]
+                                },
+                                { "name": "Rubel" },
+                                { 
+                                    "name": "Rocky",
+                                    "children": [
+                                        { "name": "Unknown Son" }
+                                    ]
+                                 }
+                            ]
+                        }]
+                    }]
+                }, {
+                    "name": "Munshi Abdul Hakim",
+                    "children": [{
+                        "name": "Obaidul Haq",
+                        "children": [{
+                            "name": "Abdul Baten",
+                            "children": [
+                                { "name": "Shiraj",
+                                    "children": [
+                                        { "name": "Mainul", "note": "Lives in Oman, known as Tendo" },
+                                        { "name": "Shorif" },
+                                        { "name": "Shoikot", "note": "Marine Engineer" }
+                                    ]
+                                 },
+                                { "name": "Mukaddes" },
+                                { "name": "Hanif",
+                                    "children": [
+                                        { "name": "Rakib", "note": "Pharmacy owner" },
+                                        { "name": "Hridoy" }
+                                    ] },
+                                { "name": "Rohim"
+                                }
+                            ]
+                        }, {
+                            "name": "Moulobi Mannan",
+                            "children": [],
+                            "note": "Info unknown"
+                        }, {
+                            "name": "Joynal Abedin",
+                            "children": [
+                                { "name": "Arman" },
+                                { "name": "Johnny" }
+                            ]
+                        }]
+                    }, {
+                        "name": "Munshi Mujibur Rahman",
+                        "children": [],
+                        "note": "Had only two daughters"
+                    }, {
+                        "name": "Atur Ali",
+                        "children": [{
+                            "name": "Sobirullah",
+                            "children": [
+                                { "name": "Khokon" },
+                                { "name": "Suman" },
+                                { "name": "Sujon" },
+                                { "name": "Shomir" },
+                                { "name": "Shopon" }
+                            ]
+                        }, {
+                            "name": "Nurul Huda",
+                            "children": [
+                                { "name": "Didar" },
+                                { "name": "Babul" },
+                                { "name": "Kamal" }
+                            ]
+                        }, {
+                            "name": "Yousuf",
+                            "children": [],
+                            "note": "No wives and no sons"
+                        }]
+                    }]
+                }, {
+                    "name": "Romej Uddin",
+                    "children": [{
+                        "name": "Soyodmiya",
+                        "children": [
+                            { "name": "Abul Mohsin" },
+                            { "name": "Gofran Uddin" }
+                        ]
+                    }]
+                }, {
+                    "name": "Waz Uddin",
+                    "note": "Also known as Kala Dadaji, had two daughters and no sons",
+                    "children": []
+                }, {
+                    "name": "Munshi Riyaz Uddin",
+                    "children": [{
+                        "name": "Joharul Haq",
+                        "children": [{
+                            "name": "Sofiqul Molla",
+                            "children": [],
+                            "note": "Had no sons"
+                        }, {
+                            "name": "Mostofa Saudagar",
+                            "children": [
+                                { "name": "Shahadat" },
+                                { "name": "Shah Nawaz" },
+                                { "name": "Suman" },
+                                { "name": "Rabbani" },
+                                { "name": "Unknown", "note": "Name unknown" }
+                            ]
+                        }, {
+                            "name": "Mosharrof Khadem",
+                            "note": "Was a secretary in the Bangladesh government",
+                            "children": [
+                                { "name": "Unknown", "note": "Had one son, name unknown" }
+                            ]
+                        }]
+                    }, {
+                        "name": "Fozlul Haq",
+                        "children": [{
+                            "name": "Jahangir",
+                            "children": [
+                                { "name": "Mehdi",
+                                    "children": [
+                                        { "name": "Orhan" }
+                                    ]
+                                 },
+                                { "name": "Meheraj" }
+                            ]
+                        }, {
+                            "name": "Nawshad",
+                            "spouse": "Shahnaz",
+                            "note": "Worked at Education Board, Sandwip branch",
+                            "children": [
+                                { "name": "Newaz Nishad",
+                                    "spouse": "Doctor",
+                                    "children": [
+                                        { "name": "PutraNishad" }
+                                    ],
+                                    "note": "Doctor, MBBS, FCPS, BCS Health"
+                                 },
+                                { "name": "Afzal Shorif Rifat",
+                                    "note": "Pharmacist, B.Pharm",
+                                 },
+                                { "name": "Sadman" }
+                            ]
+                        }, {
+                            "name": "Badol",
+                            "note": "Lives in Italy, was Imam at Aliyar Bari Mosque",
+                            "children": [
+                                { "name": "Opu" }
+                            ]
+                        }]
+                    }]
+                }]
+            }, {
+                "name": "Jinnat Ali",
+                "children": [{
+                    "name": "Moulobi Abbas Ali",
+                    "note": "Had two wives",
+                    "children": [{
+                        "name": "Moulobi Jebul Haq",
+                        "children": [{
+                            "name": "Badruddoja",
+                            "children": [
+                                { "name": "Kamal Doja" },
+                                { "name": "Babul" },
+                                { "name": "Aktar Doja", "note": "Engineer" },
+                                { "name": "Nasir Uddoja", "note": "M.Com" },
+                                { "name": "Shonaki", "note": "Engineer" },
+                                { "name": "Jahid Doja", "note": "B.Com" },
+                                { "name": "Doja Lion", "note": "Engineer" }
+                            ],
+                            "note": "Had seven sons and five daughters"
+                        }, {
+                            "name": "Manik"
+                        }]
+                    }, {
+                        "name": "Nazir Master",
+                        "children": [
+                            { "name": "Shamsul Kibria",
+                                "children": [
+                                    { "name": "son1", "note": "Engineer" },
+                                    { "name": "son2", "note": "Engineer" },
+                                    { "name": "son3", "note": "Dentist" }
+                                ],
+                                "note": "Banker. Owner of Pubali Credit & Cooperative Bank."
+                             },
+                            { "name": "Mizan",
+                                "children": [
+                                    { "name": "Unkown" }
+                                ]
+                            },
+                            { "name": "Erfan",
+                                "children": [
+                                    { "name": "Tamim" },
+                                    { "name": "Son2" }
+                                ]
+                            }
+                        ],
+                        "note": "Had three sons and three daughters"
+                    }, {
+                        "name": "Majharul Anwar",
+                        "children": [
+                            { "name": "Koysan Master", "note": "First Headmaster of Garib-E-Newaz High School" },
+                            { "name": "Abu Syed Master" },
+                            { "name": "Anwar Ukil", 
+                                "children": [
+                                    { "name": "Son1" },
+                                    { "name": "Son2" }
+                                ],
+                                "note": "Prominent Lawyer in Chattogram",
+                                "spouse": "Deputy Governor of Bangladesh Bank"
+                            },
+                            { "name": "Mobin Darvesh" }
+                        ],
+                        "note": "Had a daughter and four sons"
+                    }]
+                }, {
+                    "name": "Ahmadullah Munshi",
+                    "children": [{
+                        "name": "Abul Bashar",
+                        "children": [{
+                            "name": "Sultan Ahmed",
+                            "note": "Lives in Lakshmankumilla, is a doctor",
+                            "children": []
+                        }, {
+                            "name": "Mustafiz",
+                            "children": [
+                                { "name": "Babul" }
+                            ]
+                        }, {
+                            "name": "Abdul Wahab",
+                            "children": [
+                                { "name": "Firoz" },
+                                { "name": "Parvez" },
+                                { "name": "Babor" }
+                            ]
+                        }, {
+                            "name": "Nur Safa",
+                            "note": "Lives in USA, has two sons and a daughter",
+                            "children": [
+                                { "name": "Unknown Son 1", "note": "Name unknown" },
+                                { "name": "Unknown Son 2", "note": "Name unknown" },
+                                { "name": "Unknown Daughter", "note": "Name unknown" }
+                            ]
+                        }],
+                        "note": "Had four sons"
+                    }, {
+                        "name": "Bozlur Rahman",
+                        "spouse": "Monowara",
+                        "children": [{
+                            "name": "Enamul Haq",
+                            "note": "Had two wives",
+                            "children": [
+                                { "name": "Shah Zahan", "note": "Also known as Abul Kalam" },
+                                { "name": "Mukaddes" },
+                                { "name": "Faruk" },
+                                { "name": "Hanif" },
+                                { "name": "Haq Shahab",
+                                    "children": [
+                                        {"name": "Liza"}, 
+                                        {"name": "Lima"}, 
+                                        {"name": "Lia"}
+                                    ] 
+                                },
+                                { "name": "Emdad", "note": "Is lost" },
+                                {
+                                    "name": "Mahmood",
+                                    "children": [
+                                        { "name": "Tamanna", "note": "Married" },
+                                        { "name": "Masum", "note": "Lives in UAE" }
+                                    ],
+                                    "note": "Had a son and a daughter"
+                                }
+                            ],
+                            "children_count": 7
+                        }, {
+                            "name": "Mahibullah",
+                            "spouse": "Fazila Begum",
+                            "children": [{
+                                "name": "Humayun Kabir",
+                                "spouse": "Nilufar Akter",
+                                "children": [{
+                                    "name": "Robiul Hasan Nipun",
+                                    "note": "BSc in Mechanical Engineering, Deputy Manager at NPCBL.",
+                                    "spouse": "Nowshin Ibnat Ira",
+                                    "children": [
+                                        { "name": "Saira Hasan" },
+                                        { "name": "Safwan Hasan"}
+                                    ]
+                                }, {
+                                    "name": "Moshiur Rahman Naeem",
+                                    "note": "BSc in CSE",
+                                }],
+                            }, {
+                                "name": "Ahsanul Kabir",
+                                "children": [
+                                    { "name": "Shobnom Sultana Ria", "note": "Lives in Narayanganj", "spouse": "Unknown" },
+                                    { "name": "Abdur Rahman Riaz", "note": "MSc in Computer Vision, BSc in CSE. Lives in S.Korea" },
+                                    { "name": "Minhajur Rahman Minhaj", "note": "BSc in Nutrition & Food Engineering" }
+                                ],
+                                "note": "Businessman"
+                            }, {
+                                "name": "Monjur Hossain",
+                                "children": [
+                                    { "name": "Hamidur Rahman Turaz", "note": "BSc in CSE" },
+                                    { "name": "Sadia Sultana Othoi", "note": "BSc in Geography & Environmental Science" }
+                                ],
+                            }]
+                        }, {
+                            "name": "Rafique Master",
+                            "note": "Had two wives. Was wounded in swordfight.",
+                            "children": [
+                                { "name": "Unknown Son", "note": "Name unknown" },
+                                { "name": "Unknown Daughter 1", "note": "Name unknown" },
+                                { "name": "Unknown Daughter 2", "note": "Name unknown" }
+                            ]
+                        }]
+                    }]
+                }]
+            }]
+        };
+
+        // ============================================================
+        // D3 VISUALIZATION - FULLSCREEN WITH MAX SPACING
+        // ============================================================
+
+        const container = document.getElementById("tree-container");
+        const containerRect = container.getBoundingClientRect();
+
+        // Extreme tree size for maximum spacing
+        const treeWidth = Math.max(5000, window.innerWidth * 3.0);
+        const treeHeight = Math.max(3500, window.innerHeight * 2.8);
+
+        // Create SVG that fills the container
+        const svg = d3.select("#family-tree")
+            .append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("viewBox", `0 0 ${treeWidth} ${treeHeight}`)
+            .style("display", "block")
+            .style("background", "#fafafa");
+
+        // Main group with zoom/pan support
+        const g = svg.append("g")
+            .attr("transform", "translate(200, 150)");
+
+        // Zoom behavior
+        const zoomBehavior = d3.zoom()
+            .scaleExtent([0.05, 6])
+            .on("zoom", function(event) {
+                g.attr("transform", event.transform);
+                updateZoomDisplay(event.transform.k);
+            })
+            .on("start", function() {
+                container.style.cursor = "grabbing";
+            })
+            .on("end", function() {
+                container.style.cursor = "grab";
+            });
+
+        svg.call(zoomBehavior);
+
+        // ============================================================
+        // Build tree with MAXIMUM spacing
+        // ============================================================
+
+        const root = d3.hierarchy(familyData, d => d.children || []);
+        const treeLayout = d3.tree()
+            .size([treeWidth + 200, treeHeight - 300])
+            .separation((a, b) => {
+                // Extreme separation - increases with depth
+                const depthFactor = 1.0 + (a.depth + b.depth) * 0.12;
+                return Math.max(depthFactor, 2.0);
+            });
+
+        let treeData = treeLayout(root);
+
+        // ============================================================
+        // Helper functions
+        // ============================================================
+
+        function isFemale(name) {
+            const knownFemale = ['Saira', 'Shobnom', 'Tamanna', 'Sadia', 'Aleya', 'Sultana', 'Ria', 'Othoi', 'Monowara', 'Liza', 'Lima', 'Lia', 'Shahnaz', 'Nilufar', 'Nowshin', 'Ira'];
+            if (knownFemale.some(f => name.includes(f))) return true;
+            const lastChar = name.slice(-1).toLowerCase();
+            return lastChar === 'a' && name.length > 3;
+        }
+
+        function getNodeClass(d) {
+            const name = d.data.name || '';
+            let cls = 'node-circle';
+            if (isFemale(name)) cls += ' female';
+            else cls += ' male';
+            if (d.data.note) cls += ' has-note';
+            return cls;
+        }
+
+        function truncateText(text, maxLen) {
+            if (!text) return '';
+            return text.length > maxLen ? text.substring(0, maxLen - 2) + '…' : text;
+        }
+
+        // ============================================================
+        // Draw links
+        // ============================================================
+
+        g.selectAll(".link")
+            .data(treeData.links())
+            .enter()
+            .append("path")
+            .attr("class", "link")
+            .attr("d", d3.linkVertical()
+                .x(d => d.x)
+                .y(d => d.y)
+            );
+
+        // ============================================================
+        // Draw nodes with DRAG support
+        // ============================================================
+
+        const dragHandler = d3.drag()
+            .on("start", function(event, d) {
+                d3.select(this).raise();
+            })
+            .on("drag", function(event, d) {
+                d.x = event.x;
+                d.y = event.y;
+                d3.select(this)
+                    .attr("transform", `translate(${d.x},${d.y})`);
+                // Update links
+                updateLinks();
+            })
+            .on("end", function(event, d) {
+                d.fixedX = d.x;
+                d.fixedY = d.y;
+            });
+
+        const nodes = g.selectAll(".node-group")
+            .data(treeData.descendants())
+            .enter()
+            .append("g")
+            .attr("class", "node-group")
+            .attr("transform", d => {
+                const x = d.fixedX || d.x;
+                const y = d.fixedY || d.y;
+                return `translate(${x},${y})`;
+            })
+            .call(dragHandler);
+
+        // Circle
+        nodes.append("circle")
+            .attr("class", d => getNodeClass(d))
+            .attr("r", 14)
+            .style("stroke-width", d => d.data.note ? 3.5 : 2.5);
+
+        // Name - positioned further away for clarity
+        nodes.append("text")
+            .attr("class", "node-name")
+            .attr("dy", -5)
+            .attr("x", d => d.x < treeWidth / 2 ? 22 : -22)
+            .attr("text-anchor", d => d.x < treeWidth / 2 ? "start" : "end")
+            .text(d => truncateText(d.data.name || '', 32));
+
+        // Note (below name)
+        nodes.filter(d => d.data.note)
+            .append("text")
+            .attr("class", "node-note")
+            .attr("dy", 20)
+            .attr("x", d => d.x < treeWidth / 2 ? 22 : -22)
+            .attr("text-anchor", d => d.x < treeWidth / 2 ? "start" : "end")
+            .text(d => truncateText(d.data.note || '', 28));
+
+        // Spouse
+        nodes.filter(d => d.data.spouse)
+            .append("text")
+            .attr("class", "node-spouse")
+            .attr("dy", -22)
+            .attr("x", d => d.x < treeWidth / 2 ? 22 : -22)
+            .attr("text-anchor", d => d.x < treeWidth / 2 ? "start" : "end")
+            .text(d => `♡ ${truncateText(d.data.spouse, 22)}`);
+
+        // ============================================================
+        // Update links function (for drag)
+        // ============================================================
+
+        function updateLinks() {
+            g.selectAll(".link")
+                .data(treeData.links())
+                .transition()
+                .duration(200)
+                .attr("d", d3.linkVertical()
+                    .x(d => d.x)
+                    .y(d => d.y)
+                );
+        }
+
+        // ============================================================
+        // Store initial positions
+        // ============================================================
+
+        treeData.descendants().forEach(d => {
+            d.x0 = d.x;
+            d.y0 = d.y;
+        });
+
+        // ============================================================
+        // TOOLTIP
+        // ============================================================
+
+        const tooltip = d3.select("#tooltip");
+
+        nodes.on("mouseover", function(event, d) {
+            let html = `<div class="tt-name">${d.data.name}</div>`;
+            if (d.data.spouse) {
+                html += `<div class="tt-detail">♡ Spouse: ${d.data.spouse}</div>`;
+            }
+            if (d.data.note) {
+                html += `<div class="tt-detail">📝 ${d.data.note}</div>`;
+            }
+            if (d.data.clan) {
+                html += `<div class="tt-detail">🏛️ Clan: ${d.data.clan}</div>`;
+            }
+            if (d.children && d.children.length > 0) {
+                html += `<div class="tt-detail">👨‍👦 ${d.children.length} child${d.children.length > 1 ? 'ren' : ''}</div>`;
+            }
+
+            tooltip
+                .html(html)
+                .classed("visible", true)
+                .style("left", (event.pageX + 15) + "px")
+                .style("top", (event.pageY - 30) + "px");
+        })
+        .on("mousemove", function(event) {
+            tooltip
+                .style("left", (event.pageX + 15) + "px")
+                .style("top", (event.pageY - 30) + "px");
+        })
+        .on("mouseout", function() {
+            tooltip.classed("visible", false);
+        });
+
+        // ============================================================
+        // Click to collapse/expand
+        // ============================================================
+
+        nodes.on("click", function(event, d) {
+            if (d.children && d.children.length > 0) {
+                d._children = d.children;
+                d.children = null;
+                updateTree(d);
+            } else if (d._children) {
+                d.children = d._children;
+                d._children = null;
+                updateTree(d);
+            }
+        });
+
+        function updateTree(source) {
+            treeData = treeLayout(root);
+
+            // Update links
+            const links = g.selectAll(".link")
+                .data(treeData.links(), d => d.target.id || (d.target.id = d.target.data.name + Math.random()));
+
+            links.enter()
+                .append("path")
+                .attr("class", "link")
+                .merge(links)
+                .transition()
+                .duration(500)
+                .attr("d", d3.linkVertical()
+                    .x(d => d.x)
+                    .y(d => d.y)
+                );
+
+            links.exit().remove();
+
+            // Update nodes
+            const nodesUpdate = g.selectAll(".node-group")
+                .data(treeData.descendants(), d => d.id || (d.id = d.data.name + Math.random()));
+
+            const nodesEnter = nodesUpdate.enter()
+                .append("g")
+                .attr("class", "node-group")
+                .attr("transform", d => `translate(${d.fixedX || d.x},${d.fixedY || d.y})`)
+                .call(dragHandler);
+
+            nodesEnter.append("circle")
+                .attr("class", d => getNodeClass(d))
+                .attr("r", 14)
+                .style("stroke-width", d => d.data.note ? 3.5 : 2.5);
+
+            nodesEnter.append("text")
+                .attr("class", "node-name")
+                .attr("dy", -5)
+                .attr("x", d => d.x < treeWidth / 2 ? 22 : -22)
+                .attr("text-anchor", d => d.x < treeWidth / 2 ? "start" : "end")
+                .text(d => truncateText(d.data.name || '', 32));
+
+            nodesEnter.filter(d => d.data.note)
+                .append("text")
+                .attr("class", "node-note")
+                .attr("dy", 20)
+                .attr("x", d => d.x < treeWidth / 2 ? 22 : -22)
+                .attr("text-anchor", d => d.x < treeWidth / 2 ? "start" : "end")
+                .text(d => truncateText(d.data.note || '', 28));
+
+            nodesEnter.filter(d => d.data.spouse)
+                .append("text")
+                .attr("class", "node-spouse")
+                .attr("dy", -22)
+                .attr("x", d => d.x < treeWidth / 2 ? 22 : -22)
+                .attr("text-anchor", d => d.x < treeWidth / 2 ? "start" : "end")
+                .text(d => `♡ ${truncateText(d.data.spouse, 22)}`);
+
+            const nodesMerge = nodesEnter.merge(nodesUpdate)
+                .transition()
+                .duration(500)
+                .attr("transform", d => `translate(${d.fixedX || d.x},${d.fixedY || d.y})`);
+
+            nodesMerge.select("circle")
+                .attr("class", d => getNodeClass(d));
+
+            nodesMerge.select(".node-name")
+                .attr("x", d => d.x < treeWidth / 2 ? 22 : -22)
+                .attr("text-anchor", d => d.x < treeWidth / 2 ? "start" : "end")
+                .text(d => truncateText(d.data.name || '', 32));
+
+            nodesMerge.select(".node-note")
+                .attr("x", d => d.x < treeWidth / 2 ? 22 : -22)
+                .attr("text-anchor", d => d.x < treeWidth / 2 ? "start" : "end")
+                .text(d => truncateText(d.data.note || '', 28));
+
+            nodesMerge.select(".node-spouse")
+                .attr("x", d => d.x < treeWidth / 2 ? 22 : -22)
+                .attr("text-anchor", d => d.x < treeWidth / 2 ? "start" : "end")
+                .text(d => d.data.spouse ? `♡ ${truncateText(d.data.spouse, 22)}` : '');
+
+            nodesUpdate.exit().remove();
+
+            // Store positions
+            treeData.descendants().forEach(d => {
+                if (!d.fixedX) {
+                    d.x0 = d.x;
+                    d.y0 = d.y;
+                }
+            });
+        }
+
+        // ============================================================
+        // ZOOM CONTROLS
+        // ============================================================
+
+        let currentZoom = 1;
+
+        function updateZoomDisplay(k) {
+            currentZoom = k || currentZoom;
+            document.getElementById('zoomDisplay').textContent = Math.round(currentZoom * 100) + '%';
+        }
+
+        function zoomIn() {
+            currentZoom = Math.min(currentZoom + 0.2, 6);
+            svg.transition().duration(300)
+                .call(zoomBehavior.transform, d3.zoomIdentity.scale(currentZoom));
+            updateZoomDisplay(currentZoom);
+        }
+
+        function zoomOut() {
+            currentZoom = Math.max(currentZoom - 0.2, 0.05);
+            svg.transition().duration(300)
+                .call(zoomBehavior.transform, d3.zoomIdentity.scale(currentZoom));
+            updateZoomDisplay(currentZoom);
+        }
+
+        function resetZoom() {
+            currentZoom = 1;
+            svg.transition().duration(300)
+                .call(zoomBehavior.transform, d3.zoomIdentity);
+            updateZoomDisplay(1);
+        }
+
+        function fitToView() {
+            // Fit the tree to the visible container
+            const rect = container.getBoundingClientRect();
+            const pad = 80;
+            const viewWidth = rect.width - pad * 2;
+            const viewHeight = rect.height - pad * 2;
+
+            const treeBounds = treeData.descendants();
+            let minX = Infinity,
+                maxX = -Infinity,
+                minY = Infinity,
+                maxY = -Infinity;
+            treeBounds.forEach(d => {
+                const x = d.fixedX || d.x;
+                const y = d.fixedY || d.y;
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+            });
+
+            const treeW = maxX - minX + 200;
+            const treeH = maxY - minY + 200;
+            const scaleX = viewWidth / treeW;
+            const scaleY = viewHeight / treeH;
+            const newScale = Math.min(scaleX, scaleY, 2.5);
+
+            const centerX = (minX + maxX) / 2;
+            const centerY = (minY + maxY) / 2;
+
+            currentZoom = newScale;
+            svg.transition().duration(500)
+                .call(zoomBehavior.transform,
+                    d3.zoomIdentity
+                    .translate(viewWidth / 2 - centerX * newScale + pad, viewHeight / 2 - centerY * newScale + pad)
+                    .scale(newScale)
+                );
+            updateZoomDisplay(newScale);
+        }
+
+        // ============================================================
+        // EXPAND/COLLAPSE CONTROLS
+        // ============================================================
+
+        function expandAll() {
+            root.descendants().forEach(d => {
+                if (d._children) {
+                    d.children = d._children;
+                    d._children = null;
+                }
+            });
+            updateTree(root);
+        }
+
+        function collapseAll() {
+            root.descendants().forEach(d => {
+                if (d.children && d.depth > 0) {
+                    d._children = d.children;
+                    d.children = null;
+                }
+            });
+            updateTree(root);
+        }
+
+        function autoLayout() {
+            root.descendants().forEach(d => {
+                d.fixedX = null;
+                d.fixedY = null;
+            });
+            treeData = treeLayout(root);
+            updateTree(root);
+            fitToView();
+        }
+
+        // ============================================================
+        // KEYBOARD SHORTCUTS
+        // ============================================================
+
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey) {
+                if (e.key === '=' || e.key === '+') { e.preventDefault();
+                    zoomIn(); }
+                if (e.key === '-') { e.preventDefault();
+                    zoomOut(); }
+                if (e.key === '0') { e.preventDefault();
+                    resetZoom(); }
+                if (e.key === 'f') { e.preventDefault();
+                    fitToView(); }
+            }
+        });
+
+        // ============================================================
+        // INITIAL FIT AFTER LOAD
+        // ============================================================
+
+        setTimeout(() => {
+            resetZoom();
+        }, 600);
+
+        console.log("🌳 Family Tree loaded! Total people: " + treeData.descendants().length);
+        console.log("💡 Tips:");
+        console.log("   - Drag individual nodes to reposition them");
+        console.log("   - Drag the canvas to pan");
+        console.log("   - Scroll to zoom");
+        console.log("   - Click a person to expand/collapse");
+        console.log("   - Ctrl+= to zoom in, Ctrl+- to zoom out, Ctrl+F to fit");
+    </script>
+
+</body>
+</html>
